@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="h-full bg-slate-900 text-slate-100">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>كاشف الجرائم الإلكترونية | Spot the Cyber Crime</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Google Fonts: Cairo for Arabic & Inter for English -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-iecdLmaskl7CVkqkXNQ/ZH/XLlvWZOJyj7Yy7tcenmpD1ypASozpmT/E0iPtmFIB46ZmdtAc9eNBvH0H/ZpiBw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            arabic: ['Cairo', 'sans-serif'],
+            english: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            cyber: {
+              dark: '#0f172a',
+              card: '#1e293b',
+              accent: '#0ea5e9',
+              green: '#10b981',
+              red: '#ef4444',
+              gold: '#f59e0b'
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Smooth transitions for directional and layout shifts */
+    body {
+      transition: background-color 0.3s ease;
+      font-family: 'Cairo', sans-serif;
+    }
+    
+    html[lang="en"] body {
+      font-family: 'Inter', sans-serif;
+    }
+
+    /* Pulse glow effect for interactive cyber feel */
+    .cyber-glow {
+      box-shadow: 0 0 15px rgba(14, 165, 233, 0.25);
+    }
+    .cyber-glow-success {
+      box-shadow: 0 0 15px rgba(16, 185, 129, 0.3);
+    }
+    .cyber-glow-danger {
+      box-shadow: 0 0 15px rgba(239, 68, 68, 0.3);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between selection:bg-sky-500 selection:text-white">
+
+  <!-- Header -->
+  <header class="sticky top-0 z-50 bg-slate-900/90 backdrop-blur-md border-b border-slate-800">
+    <div class="max-w-xl mx-auto px-4 py-3 flex items-center justify-between">
+      <!-- Brand / Title -->
+      <div class="flex items-center space-x-2 space-x-reverse">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-sky-500 to-emerald-400 flex items-center justify-center text-slate-900 font-bold shadow-lg shadow-sky-500/20">
+          <i class="fa-solid fa-user-shield text-lg"></i>
+        </div>
+        <div>
+          <h1 id="app-title" class="font-extrabold text-base md:text-lg text-white leading-tight">
+            كاشف الجرائم الإلكترونية
+          </h1>
+          <p id="app-subtitle" class="text-xs text-sky-400 font-medium">اختبر وعيك الأمني الرقمي</p>
+        </div>
+      </div>
+
+      <!-- Language Switcher Button -->
+      <button 
+        id="lang-toggle-btn"
+        onclick="toggleLanguage()"
+        class="flex items-center gap-2 px-3 py-1.5 rounded-lg border border-sky-500/30 bg-slate-800/80 hover:bg-slate-800 text-sky-300 hover:text-white transition-all text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-sky-500"
+        aria-label="Switch Language"
+      >
+        <i class="fa-solid fa-globe text-sm"></i>
+        <span id="lang-btn-text">English</span>
+      </button>
+    </div>
+
+    <!-- Progress Bar (Hidden during intro or final screen if desired, active during quiz) -->
+    <div id="progress-container" class="w-full bg-slate-800 h-1.5 relative overflow-hidden">
+      <div id="progress-bar" class="bg-gradient-to-r from-sky-500 to-emerald-400 h-full w-0 transition-all duration-500 ease-out"></div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="flex-grow flex items-center justify-center p-4 max-w-xl mx-auto w-full">
+
+    <!-- Screen 1: Start / Welcome Screen -->
+    <section id="start-screen" class="w-full bg-slate-800/80 rounded-2xl p-6 border border-slate-700/60 cyber-glow text-center flex flex-col items-center">
+      <div class="w-20 h-20 rounded-2xl bg-sky-500/10 border border-sky-500/30 flex items-center justify-center text-sky-400 mb-5 text-4xl">
+        <i class="fa-solid fa-shield-halved animate-pulse"></i>
+      </div>
+      
+      <h2 id="start-title" class="text-2xl font-bold text-white mb-2">هل يمكنك اكتشاف الاحتيال والجرائم الرقمية؟</h2>
+      <p id="start-desc" class="text-slate-300 text-sm leading-relaxed mb-6">
+        تُعرض عليك 5 سيناريوهات يومية شائعة. مهمتك هي تقييم المواقف والتعرف على الهجمات والتهديدات الإلكترونية لحماية نفسك وبياناتك.
+      </p>
+
+      <div class="w-full bg-slate-900/60 rounded-xl p-4 mb-6 border border-slate-800 text-slate-400 text-xs text-start space-y-2">
+        <div class="flex items-center gap-2 text-sky-400 font-semibold">
+          <i class="fa-solid fa-circle-info"></i>
+          <span id="info-header">تعليمات الاختيار:</span>
+        </div>
+        <ul class="list-disc list-inside space-y-1">
+          <li id="info-item-1">اقرأ السيناريو أو الرسالة بعناية.</li>
+          <li id="info-item-2">حدد هل الإجراء آمن أم يمثل جريمة/احتيال إلكتروني.</li>
+          <li id="info-item-3">احصل على شرح فوري وتعلم كيف تحمي نفسك.</li>
+        </ul>
+      </div>
+
+      <button 
+        onclick="startQuiz()"
+        class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold shadow-lg shadow-sky-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+      >
+        <span id="start-btn-text">ابدأ الاختبار الآن</span>
+        <i class="fa-solid fa-arrow-left id-arrow"></i>
+      </button>
+    </section>
+
+    <!-- Screen 2: Question Card Screen -->
+    <section id="question-screen" class="w-full bg-slate-800/80 rounded-2xl p-5 md:p-6 border border-slate-700/60 hidden flex-col">
+      <!-- Question Header Stats -->
+      <div class="flex items-center justify-between mb-4 pb-3 border-b border-slate-700/50">
+        <span id="question-counter" class="text-xs font-bold text-sky-400 uppercase tracking-wider bg-sky-950/60 border border-sky-500/20 px-3 py-1 rounded-full">
+          السؤال 1 من 5
+        </span>
+        <span id="category-badge" class="text-xs text-slate-400 flex items-center gap-1.5 font-medium">
+          <i class="fa-solid fa-tag text-sky-400"></i>
+          <span>تصيّد إلكتروني</span>
+        </span>
+      </div>
+
+      <!-- Question Title & Scenario Box -->
+      <div id="scenario-container" class="mb-5">
+        <h3 id="question-title" class="text-lg font-bold text-white mb-3 leading-snug">
+          عنوان السؤال
+        </h3>
+        
+        <!-- Mock Phone/Email Display Box -->
+        <div id="scenario-box" class="bg-slate-900 border border-slate-700/80 rounded-xl p-4 text-sm text-slate-200 relative overflow-hidden">
+          <div class="flex items-center gap-2 mb-2 pb-2 border-b border-slate-800 text-slate-400 text-xs">
+            <i id="scenario-icon" class="fa-solid fa-envelope text-sky-400"></i>
+            <span id="scenario-sender" class="font-mono text-slate-300">sender@unknown.com</span>
+          </div>
+          <p id="scenario-text" class="leading-relaxed whitespace-pre-line font-sans">
+            نص السيناريو...
+          </p>
+        </div>
+      </div>
+
+      <!-- Options List -->
+      <div id="options-container" class="space-y-3 mb-5">
+        <!-- Dynamically Generated Buttons -->
+      </div>
+
+      <!-- Feedback Explanation Box (Hidden initially) -->
+      <div id="feedback-box" class="hidden mb-5 p-4 rounded-xl border text-sm leading-relaxed transition-all duration-300">
+        <div class="flex items-center gap-2 font-bold mb-1.5 text-base" id="feedback-title">
+          <!-- Icon & Dynamic Result Text -->
+        </div>
+        <p id="feedback-text" class="text-slate-200 text-xs md:text-sm">
+          شرح الإجابة...
+        </p>
+      </div>
+
+      <!-- Action Button -->
+      <button 
+        id="next-btn"
+        onclick="handleNextQuestion()"
+        class="w-full py-3 px-5 rounded-xl bg-slate-700 text-slate-400 font-bold cursor-not-allowed transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+        disabled
+      >
+        <span id="next-btn-text">التالي</span>
+        <i class="fa-solid fa-arrow-left id-arrow"></i>
+      </button>
+    </section>
+
+    <!-- Screen 3: Final Results Screen -->
+    <section id="results-screen" class="w-full bg-slate-800/80 rounded-2xl p-6 border border-slate-700/60 text-center hidden flex-col items-center">
+      <div id="result-badge-icon" class="w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-4 text-4xl shadow-lg">
+        <i class="fa-solid fa-award"></i>
+      </div>
+
+      <h2 id="result-title" class="text-2xl font-black text-white mb-1">نتيجة التقييم</h2>
+      <p id="result-subtitle" class="text-slate-400 text-xs mb-6">لقد أكملت اختبار التوعية بالجرائم الإلكترونية</p>
+
+      <!-- Score Ring Display -->
+      <div class="bg-slate-900/80 rounded-xl p-5 w-full border border-slate-700/60 mb-6 flex flex-col items-center">
+        <div class="text-4xl font-extrabold text-white mb-1">
+          <span id="score-text" class="text-sky-400">0</span> <span class="text-slate-500 text-2xl">/ 5</span>
+        </div>
+        <div id="percentage-badge" class="text-xs font-bold px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 mb-3">
+          0%
+        </div>
+        <div id="badge-title" class="text-base font-bold text-emerald-400 flex items-center gap-2">
+          <!-- Dynamic Tier Label -->
+        </div>
+        <p id="badge-description" class="text-slate-300 text-xs mt-2 max-w-sm">
+          وصف المستوى والأداء أمنيًا...
+        </p>
+      </div>
+
+      <!-- Retry / Action Buttons -->
+      <button 
+        onclick="restartQuiz()"
+        class="w-full py-3.5 px-6 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold shadow-lg shadow-sky-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+      >
+        <i class="fa-solid fa-rotate-right"></i>
+        <span id="retry-btn-text">إعادة المحاولة</span>
+      </button>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="py-4 text-center text-xs text-slate-500 border-t border-slate-800">
+    <p id="footer-text">منصة التوعية بالأمن السيبراني © 2026 | حماية بياناتك تبدأ بوعيك</p>
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // Global State
+    let currentLang = 'ar'; // Default language Arabic
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let selectedOption = null;
+    let isAnswerSubmitted = false;
+
+    // Translation UI Dictionaries
+    const uiTranslations = {
+      ar: {
+        appTitle: "كاشف الجرائم الإلكترونية",
+        appSubtitle: "اختبر وعيك الأمني الرقمي",
+        langBtnText: "English",
+        startTitle: "هل يمكنك اكتشاف الاحتيال والجرائم الرقمية؟",
+        startDesc: "تُعرض عليك 5 سيناريوهات يومية شائعة. مهمتك هي تقييم المواقف والتعرف على الهجمات والتهديدات الإلكترونية لحماية نفسك وبياناتك.",
+        infoHeader: "تعليمات الاختيار:",
+        infoItem1: "اقرأ السيناريو أو الرسالة بعناية.",
+        infoItem2: "حدد هل الإجراء آمن أم يمثل جريمة/احتيال إلكتروني.",
+        infoItem3: "احصل على شرح فوري وتعلم كيف تحمي نفسك.",
+        startBtnText: "ابدأ الاختبار الآن",
+        questionCounterFormat: "السؤال {current} من {total}",
+        nextBtnText: "التالي",
+        finishBtnText: "عرض النتائج",
+        resultTitle: "نتيجة التقييم",
+        resultSubtitle: "لقد أكملت اختبار التوعية بالجرائم الإلكترونية",
+        retryBtnText: "إعادة المحاولة",
+        footerText: "منصة التوعية بالأمن السيبراني © 2026 | حماية بياناتك تبدأ بوعيك",
+        correctText: "إجابة صحيحة!",
+        incorrectText: "إجابة خاطئة!",
+        tierHighTitle: "خبير أمن سيبراني 🛡️",
+        tierHighDesc: "ممتاز! لديك وعي مرتفع وقدرة عالية على كشف محاولات الاحتيال والجرائم الرقمية.",
+        tierMidTitle: "مستخدم حذر ⚠️",
+        tierMidDesc: "جيد! تشخص معظم التهديدات، لكن يجب الاهتمام بتفاصيل بعض الرسائل والممارسات الرقمية.",
+        tierLowTitle: "معرض للمخاطر الرقمية 🚨",
+        tierLowDesc: "انتبه! أداؤك يشير إلى إمكانية وقوعك في فخ المحتالين بسهولة. راجع الإرشادات لحماية بياناتك."
+      },
+      en: {
+        appTitle: "Spot the Cyber Crime",
+        appSubtitle: "Test Your Cyber Security Awareness",
+        langBtnText: "العربية",
+        startTitle: "Can You Spot Digital Fraud & Cyber Crime?",
+        startDesc: "You will face 5 realistic daily scenarios. Your task is to evaluate each situation and identify cyber threats to protect yourself and your data.",
+        infoHeader: "Instructions:",
+        infoItem1: "Read the scenario or message carefully.",
+        infoItem2: "Decide whether it is Safe or a Cyber Crime / Fraud attempt.",
+        infoItem3: "Get instant feedback and learn how to stay protected.",
+        startBtnText: "Start Quiz Now",
+        questionCounterFormat: "Question {current} of {total}",
+        nextBtnText: "Next",
+        finishBtnText: "View Results",
+        resultTitle: "Assessment Result",
+        resultSubtitle: "You have completed the Cyber Crime Awareness Quiz",
+        retryBtnText: "Try Again",
+        footerText: "Cyber Security Awareness Platform © 2026 | Protection starts with awareness",
+        correctText: "Correct Answer!",
+        incorrectText: "Incorrect Answer!",
+        tierHighTitle: "Cyber Security Expert 🛡️",
+        tierHighDesc: "Outstanding! You possess high security awareness and can easily spot fraud and phishing attempts.",
+        tierMidTitle: "Cautious User ⚠️",
+        tierMidDesc: "Good job! You spot most threats, but pay closer attention to message details and public network habits.",
+        tierLowTitle: "At High Cyber Risk 🚨",
+        tierLowDesc: "Warning! Your score indicates vulnerability to cyber scams. Review security best practices immediately."
+      }
+    };
+
+    // 5 Comprehensive Cyber Crime Scenarios
+    const questions = [
+      {
+        id: 1,
+        category: { ar: "البريد الاحتيالي (Phishing)", en: "Email Phishing" },
+        icon: "fa-envelope",
+        sender: "support@paypaI-security-verify.com",
+        title: {
+          ar: "1. رسالة بريدية عاجلة لإيقاف الحساب",
+          en: "1. Urgent Account Suspension Email"
+        },
+        scenario: {
+          ar: "وصلتك إيميل يخبرك: 'تم تعليق حسابك البنكي مؤقتاً بسبب نشاط مشبوه. يرجى الضغط على الرابط أدناه لتسجيل الدخول وتأكيد هويتك خلال 24 ساعة وإلا سيتم إغلاق الحساب نهائياً'.",
+          en: "You received an email stating: 'Your bank account has been temporarily suspended due to suspicious activity. Click the link below to log in and verify your identity within 24 hours or your account will be closed permanently.'"
+        },
+        options: [
+          {
+            id: 'crime',
+            text: { ar: "جريمة إلكترونية / احتيال (Phishing)", en: "Cyber Crime / Phishing Scam" },
+            isCorrect: true
+          },
+          {
+            id: 'safe',
+            text: { ar: "إجراء آمن من البنك", en: "Safe Banking Procedure" },
+            isCorrect: false
+          }
+        ],
+        explanation: {
+          ar: "هذه محاولة تصيّد (Phishing)! البنوك والشركات الموثوقة لا تطلب منك تحديث بياناتك الحساسة عبر روابط سريعة في البريد الإلكتروني. لاحظ أيضاً اسم النطاق المريب (paypaI بحرف I كبير بدلاً من l).",
+          en: "This is a Phishing attack! Legitimate banks never ask you to verify sensitive credentials via urgent email links. Notice the misspelled fake domain (paypaI with uppercase 'I' instead of 'l')."
+        }
+      },
+      {
+        id: 2,
+        category: { ar: "احتيال الرسائل (Smishing)", en: "SMS Smishing" },
+        icon: "fa-comment-sms",
+        sender: "+966 5x xxx xxxx (SMS)",
+        title: {
+          ar: "2. رسالة نصية لتسليم طرد إكسبريس",
+          en: "2. Express Delivery SMS Scam"
+        },
+        scenario: {
+          ar: "تلقيت رسالة SMS: 'تعذر تسليم شحنتك بسبب عنوان غير مكتمل. يرجى دفع رسوم إضافية بقيمة 2.5 ريال لتحديث العنوان عبر الرابط: bit.ly/3x84Pql'.",
+          en: "You received an SMS: 'Your shipment delivery failed due to incomplete address. Please pay a small fee of $1.50 to update address via link: bit.ly/3x84Pql'."
+        },
+        options: [
+          {
+            id: 'safe',
+            text: { ar: "رسالة رسمية من شركة الشحن", en: "Official Shipping Notification" },
+            isCorrect: false
+          },
+          {
+            id: 'crime',
+            text: { ar: "احتيال بريدي / اصطياد SMS", en: "Smishing Scam / Fraud" },
+            isCorrect: true
+          }
+        ],
+        explanation: {
+          ar: "احتيال SMS (Smishing)! يستخدم المحتالون روابط مختصرة ودفع مبالغ ضئيلة لسرقة بيانات بطاقتك الائتمانية. تحقق دائماً من التطبيقات الرسمية لشركات الشحن باستخدام رقم تتبعك.",
+          en: "This is Smishing (SMS Phishing)! Attackers use shortened URLs and tiny fee prompts to steal credit card credentials. Always verify parcel statuses directly on official postal apps using tracking IDs."
+        }
+      },
+      {
+        id: 3,
+        category: { ar: "الهندسة الاجتماعية والوسائط", en: "Social Engineering & USB" },
+        icon: "fa-usb",
+        sender: "Physical USB Device",
+        title: {
+          ar: "3. العثور على قرص تخزين (USB) في مواقف العمل",
+          en: "3. Finding a USB Drive in a Parking Lot"
+        },
+        scenario: {
+          ar: "عثرت على ذاكرة فلاش (USB) ملقاة في مواقف السيارات بالشركة مكتوب عليها بخط اليد 'رواتب الموظفين 2026'. أخذتها وقمت بتوصيلها بكومبيوتر العمل لمعرفة صاحبها.",
+          en: "You found a USB flash drive in your office parking lot labeled 'Employee Salaries 2026'. You plugged it into your work desktop computer to identify its owner."
+        },
+        options: [
+          {
+            id: 'crime',
+            text: { ar: "تهديد أمني / هجوم اختراق (USB Drop)", en: "Cyber Risk / USB Drop Attack" },
+            isCorrect: true
+          },
+          {
+            id: 'safe',
+            text: { ar: "تصرف آمن ومساعد", en: "Safe & Helpful Behavior" },
+            isCorrect: false
+          }
+        ],
+        explanation: {
+          ar: "خطر أمني جسيم! هجوم 'إسقاط الـ USB' يعتمد على فضول الأشخاص لنشر برامج الفدية والتجسس داخل شبكات الشركات. لا تقم أبداً بتوصيل وحدات تخزين مجهولة وجرّب تسليمها لقسم الأمن.",
+          en: "Severe security threat! A 'USB Drop' attack exploits human curiosity to infect internal corporate networks with ransomware/malware. Never plug in unknown drives; deliver them to IT/Security."
+        }
+      },
+      {
+        id: 4,
+        category: { ar: "أمن الشبكات اللاسلكية", en: "Wi-Fi Network Security" },
+        icon: "fa-wifi",
+        sender: "Public_Coffee_Free_WiFi",
+        title: {
+          ar: "4. إنجاز المعاملات البنكية عبر شبكة كافيه عامة",
+          en: "4. Online Banking on Public Wi-Fi"
+        },
+        scenario: {
+          ar: "أثناء تواجدك في مقهى، اتصلت بشبكة Wi-Fi مفتوحة وبدون كلمة سر، وقمت بإدخال بيانات بطاقتك الائتمانية لإتمام شراء إلكتروني بدون استخدام شبكة افتراضية خاصة (VPN).",
+          en: "While sitting in a cafe, you connected to an open Wi-Fi network without a password and entered your credit card details for an online purchase without using a VPN."
+        },
+        options: [
+          {
+            id: 'safe',
+            text: { ar: "إجراء آمن", en: "Safe Practice" },
+            isCorrect: false
+          },
+          {
+            id: 'crime',
+            text: { ar: "سلوك غير آمن ويُعرضك للتنصت", en: "Unsafe Behavior / Eavesdropping Risk" },
+            isCorrect: true
+          }
+        ],
+        explanation: {
+          ar: "غير آمن! شبكات الـ Wi-Fi العامة غير المشفرة تسمح للمخترقين بشن هجمات 'رجل في المنتصف' (Man-in-the-Middle) وسرقة البيانات الحساسة وكلمات المرور. استخدم بيانات الهاتف (4G/5G) أو VPN.",
+          en: "Unsafe practice! Open public Wi-Fi enables 'Man-in-the-Middle' attacks where hackers intercept network traffic to steal credentials. Use cellular data (4G/5G) or a trusted VPN."
+        }
+      },
+      {
+        id: 5,
+        category: { ar: "إدارة الحسابات وكلمات المرور", en: "Password Security & MFA" },
+        icon: "fa-key",
+        sender: "Security Prompt",
+        title: {
+          ar: "5. مشاركة رمز التحقق وتكرار كلمات المرور",
+          en: "5. Sharing Verification Codes (MFA)"
+        },
+        scenario: {
+          ar: "اتصل بك شخص يدعي أنه من 'الدعم الفني للبنك' لطلب رمز التحقق (OTP) الذي وصلك للتو على هاتفك لإلغاء عملية احتيالية من حسابك.",
+          en: "Someone claiming to be from 'Bank Support' calls you asking for the OTP code sent to your mobile phone in order to 'cancel a fraudulent transaction'."
+        },
+        options: [
+          {
+            id: 'crime',
+            text: { ar: "جريمة هندسة اجتماعية (MFA Bypass)", en: "Social Engineering / Cyber Fraud" },
+            isCorrect: true
+          },
+          {
+            id: 'safe',
+            text: { ar: "إجراء آمن لحماية الحساب", en: "Safe Support Verification" },
+            isCorrect: false
+          }
+        ],
+        explanation: {
+          ar: "جريمة احتيال إلكتروني! رموز OTP هي خط دفاعك الأخير، ولا يطلبها موظفو البنوك إطلاقاً تحت أي ظرف. مشاركة هذا الرمز تمنح المخترق نفاذاً كاملاً لأموالك وحسابك.",
+          en: "Cyber Crime / Scam! One-Time Passwords (OTP) are your final layer of defense. Bank staff will NEVER ask for your OTP. Sharing it grants attackers instant full access to your funds."
+        }
+      }
+    ];
+
+    // Initialize Page
+    document.addEventListener('DOMContentLoaded', () => {
+      updateLanguageUI();
+    });
+
+    // Toggle Language Function
+    function toggleLanguage() {
+      currentLang = currentLang === 'ar' ? 'en' : 'ar';
+      
+      // Update HTML Tag Attributes for Directionality & Language
+      const htmlEl = document.documentElement;
+      htmlEl.setAttribute('lang', currentLang);
+      htmlEl.setAttribute('dir', currentLang === 'ar' ? 'rtl' : 'ltr');
+
+      // Update All Static UI Elements
+      updateLanguageUI();
+
+      // If in quiz mode, re-render question to preserve state in new language
+      if (!document.getElementById('question-screen').classList.contains('hidden')) {
+        renderQuestion();
+      }
+
+      // If in results mode, re-render result calculations in new language
+      if (!document.getElementById('results-screen').classList.contains('hidden')) {
+        showResults();
+      }
+    }
+
+    // Update Text Content across all DOM Elements based on active language
+    function updateLanguageUI() {
+      const t = uiTranslations[currentLang];
+
+      document.getElementById('app-title').innerText = t.appTitle;
+      document.getElementById('app-subtitle').innerText = t.appSubtitle;
+      document.getElementById('lang-btn-text').innerText = t.langBtnText;
+
+      // Start Screen Translations
+      document.getElementById('start-title').innerText = t.startTitle;
+      document.getElementById('start-desc').innerText = t.startDesc;
+      document.getElementById('info-header').innerText = t.infoHeader;
+      document.getElementById('info-item-1').innerText = t.infoItem1;
+      document.getElementById('info-item-2').innerText = t.infoItem2;
+      document.getElementById('info-item-3').innerText = t.infoItem3;
+      document.getElementById('start-btn-text').innerText = t.startBtnText;
+
+      // Result Screen Translations
+      document.getElementById('result-title').innerText = t.resultTitle;
+      document.getElementById('result-subtitle').innerText = t.resultSubtitle;
+      document.getElementById('retry-btn-text').innerText = t.retryBtnText;
+      document.getElementById('footer-text').innerText = t.footerText;
+
+      // Flip Icons Direction for RTL vs LTR
+      const arrows = document.querySelectorAll('.id-arrow');
+      arrows.forEach(arrow => {
+        if (currentLang === 'ar') {
+          arrow.classList.remove('fa-arrow-right');
+          arrow.classList.add('fa-arrow-left');
+        } else {
+          arrow.classList.remove('fa-arrow-left');
+          arrow.classList.add('fa-arrow-right');
+        }
+      });
+    }
+
+    // Start Quiz
+    function startQuiz() {
+      currentQuestionIndex = 0;
+      score = 0;
+      document.getElementById('start-screen').classList.add('hidden');
+      document.getElementById('results-screen').classList.add('hidden');
+      document.getElementById('question-screen').classList.remove('hidden');
+      document.getElementById('question-screen').classList.add('flex');
+      
+      renderQuestion();
+    }
+
+    // Render Current Question
+    function renderQuestion() {
+      const q = questions[currentQuestionIndex];
+      const t = uiTranslations[currentLang];
+
+      // Reset state for new question
+      selectedOption = null;
+      isAnswerSubmitted = false;
+
+      // Update Progress Bar
+      const progressPercent = ((currentQuestionIndex + 1) / questions.length) * 100;
+      document.getElementById('progress-bar').style.width = `${progressPercent}%`;
+
+      // Update Headers
+      document.getElementById('question-counter').innerText = t.questionCounterFormat
+        .replace('{current}', currentQuestionIndex + 1)
+        .replace('{total}', questions.length);
+      
+      document.getElementById('category-badge').querySelector('span').innerText = q.category[currentLang];
+
+      // Update Scenario Details
+      document.getElementById('question-title').innerText = q.title[currentLang];
+      document.getElementById('scenario-text').innerText = q.scenario[currentLang];
+      document.getElementById('scenario-sender').innerText = q.sender;
+      document.getElementById('scenario-icon').className = `fa-solid ${q.icon} text-sky-400`;
+
+      // Hide Feedback Box
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.className = 'hidden mb-5 p-4 rounded-xl border text-sm leading-relaxed transition-all duration-300';
+      feedbackBox.innerHTML = `
+        <div class="flex items-center gap-2 font-bold mb-1.5 text-base" id="feedback-title"></div>
+        <p id="feedback-text" class="text-slate-200 text-xs md:text-sm"></p>
+      `;
+
+      // Reset Next Button
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = true;
+      nextBtn.className = "w-full py-3 px-5 rounded-xl bg-slate-700 text-slate-400 font-bold cursor-not-allowed transition-all flex items-center justify-center gap-2 opacity-60";
+      document.getElementById('next-btn-text').innerText = (currentQuestionIndex === questions.length - 1) ? t.finishBtnText : t.nextBtnText;
+
+      // Render Options
+      const optionsContainer = document.getElementById('options-container');
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.onclick = () => selectOption(idx);
+        btn.className = `w-full p-4 rounded-xl border border-slate-700 bg-slate-800 hover:bg-slate-700/80 text-white font-medium text-start transition-all flex items-center justify-between group focus:outline-none focus:ring-2 focus:ring-sky-500`;
+        btn.setAttribute('data-index', idx);
+
+        btn.innerHTML = `
+          <span class="text-sm md:text-base">${opt.text[currentLang]}</span>
+          <div class="w-6 h-6 rounded-full border border-slate-600 group-hover:border-sky-400 flex items-center justify-center text-xs text-transparent option-indicator">
+            <i class="fa-solid fa-check"></i>
+          </div>
+        `;
+
+        optionsContainer.appendChild(btn);
+      });
+    }
+
+    // Option Selection Handler
+    function selectOption(optionIndex) {
+      if (isAnswerSubmitted) return; // Prevent changing after submission
+
+      const q = questions[currentQuestionIndex];
+      isAnswerSubmitted = true;
+      selectedOption = optionIndex;
+      const chosenOpt = q.options[optionIndex];
+
+      // Check if correct
+      if (chosenOpt.isCorrect) {
+        score++;
+      }
+
+      // Highlight options
+      const optionButtons = document.querySelectorAll('#options-container button');
+      optionButtons.forEach((btn, idx) => {
+        btn.disabled = true;
+        const indicator = btn.querySelector('.option-indicator');
+
+        if (q.options[idx].isCorrect) {
+          // Highlight correct option in green
+          btn.className = "w-full p-4 rounded-xl border-2 border-emerald-500 bg-emerald-950/40 text-white font-medium text-start transition-all flex items-center justify-between";
+          indicator.className = "w-6 h-6 rounded-full bg-emerald-500 text-slate-900 flex items-center justify-center text-xs font-bold";
+        } else if (idx === optionIndex && !chosenOpt.isCorrect) {
+          // Highlight incorrect choice in red
+          btn.className = "w-full p-4 rounded-xl border-2 border-red-500 bg-red-950/40 text-white font-medium text-start transition-all flex items-center justify-between";
+          indicator.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+          indicator.className = "w-6 h-6 rounded-full bg-red-500 text-white flex items-center justify-center text-xs font-bold";
+        } else {
+          btn.className = "w-full p-4 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-500 font-medium text-start transition-all flex items-center justify-between opacity-50";
+        }
+      });
+
+      // Display Explanation Feedback Box
+      showFeedback(chosenOpt.isCorrect, q.explanation[currentLang]);
+
+      // Enable Next Button
+      const nextBtn = document.getElementById('next-btn');
+      nextBtn.disabled = false;
+      nextBtn.className = "w-full py-3.5 px-5 rounded-xl bg-gradient-to-r from-sky-500 to-blue-600 hover:from-sky-400 hover:to-blue-500 text-white font-bold shadow-lg shadow-sky-500/25 active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer";
+    }
+
+    // Show Feedback Box with details
+    function showFeedback(isCorrect, explanationText) {
+      const t = uiTranslations[currentLang];
+      const feedbackBox = document.getElementById('feedback-box');
+      feedbackBox.classList.remove('hidden');
+
+      if (isCorrect) {
+        feedbackBox.className = "mb-5 p-4 rounded-xl border border-emerald-500/40 bg-emerald-950/30 text-emerald-300 cyber-glow-success block animate-fadeIn";
+        feedbackBox.querySelector('#feedback-title').innerHTML = `
+          <i class="fa-solid fa-circle-check text-emerald-400"></i>
+          <span>${t.correctText}</span>
+        `;
+      } else {
+        feedbackBox.className = "mb-5 p-4 rounded-xl border border-red-500/40 bg-red-950/30 text-red-300 cyber-glow-danger block animate-fadeIn";
+        feedbackBox.querySelector('#feedback-title').innerHTML = `
+          <i class="fa-solid fa-circle-xmark text-red-400"></i>
+          <span>${t.incorrectText}</span>
+        `;
+      }
+
+      feedbackBox.querySelector('#feedback-text').innerText = explanationText;
+    }
+
+    // Handle Next Question or Finish
+    function handleNextQuestion() {
+      if (!isAnswerSubmitted) return;
+
+      if (currentQuestionIndex < questions.length - 1) {
+        currentQuestionIndex++;
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    // Show Final Results
+    function showResults() {
+      const t = uiTranslations[currentLang];
+      document.getElementById('question-screen').classList.add('hidden');
+      document.getElementById('question-screen').classList.remove('flex');
+      document.getElementById('results-screen').classList.remove('hidden');
+      document.getElementById('results-screen').classList.add('flex');
+
+      // Update Percentage & Scores
+      document.getElementById('score-text').innerText = score;
+      const percentage = Math.round((score / questions.length) * 100);
+      document.getElementById('percentage-badge').innerText = `${percentage}%`;
+
+      const badgeTitleEl = document.getElementById('badge-title');
+      const badgeDescEl = document.getElementById('badge-description');
+      const badgeIconEl = document.getElementById('result-badge-icon');
+
+      // Tier logic based on score
+      if (score >= 4) {
+        badgeTitleEl.innerText = t.tierHighTitle;
+        badgeTitleEl.className = "text-base font-bold text-emerald-400 flex items-center gap-2 justify-center";
+        badgeDescEl.innerText = t.tierHighDesc;
+        badgeIconEl.className = "w-20 h-20 rounded-full bg-emerald-500/10 border-2 border-emerald-500/40 flex items-center justify-center text-emerald-400 mb-4 text-4xl shadow-lg shadow-emerald-500/10";
+        badgeIconEl.innerHTML = '<i class="fa-solid fa-shield-cat"></i>';
+      } else if (score >= 2) {
+        badgeTitleEl.innerText = t.tierMidTitle;
+        badgeTitleEl.className = "text-base font-bold text-amber-400 flex items-center gap-2 justify-center";
+        badgeDescEl.innerText = t.tierMidDesc;
+        badgeIconEl.className = "w-20 h-20 rounded-full bg-amber-500/10 border-2 border-amber-500/40 flex items-center justify-center text-amber-400 mb-4 text-4xl shadow-lg shadow-amber-500/10";
+        badgeIconEl.innerHTML = '<i class="fa-solid fa-user-ninja"></i>';
+      } else {
+        badgeTitleEl.innerText = t.tierLowTitle;
+        badgeTitleEl.className = "text-base font-bold text-red-400 flex items-center gap-2 justify-center";
+        badgeDescEl.innerText = t.tierLowDesc;
+        badgeIconEl.className = "w-20 h-20 rounded-full bg-red-500/10 border-2 border-red-500/40 flex items-center justify-center text-red-400 mb-4 text-4xl shadow-lg shadow-red-500/10";
+        badgeIconEl.innerHTML = '<i class="fa-solid fa-triangle-exclamation"></i>';
+      }
+
+      // Complete Progress Bar
+      document.getElementById('progress-bar').style.width = '100%';
+    }
+
+    // Restart Quiz
+    function restartQuiz() {
+      startQuiz();
+    }
+  </script>
+</body>
+</html>
